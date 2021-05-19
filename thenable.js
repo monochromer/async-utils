@@ -18,9 +18,13 @@ export class Thenable {
       try {
         const next = this.resolve(value);
         if (next) {
-          next.then(value => {
-            this.next.resolve(value);
-          });
+          if (next.then) {
+            next.then(value => {
+              this.next.resolve(value);
+            });
+          } else {
+            this.next.resolve(next);
+          }
         }
       } catch (error) {
         if (this.reject) {
